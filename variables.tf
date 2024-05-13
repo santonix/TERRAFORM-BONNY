@@ -102,3 +102,92 @@ variable "bucket_name" {
     error_message = "Name must be between 5 and 30 characters long"
   }
 }
+
+# reference varaiable example: used in resource block or modukes by using the 'var.'prefix...
+resource "aws_instance" "example" {
+    count = var.instance_count
+
+    ami = var.ami_id
+    instance_type = "t2.micro"
+    tags = {
+        Name = "${var.environment}-${coumt.index + 1}"
+        Environment = var.environment 
+    
+    }
+}
+/*
+#### how to set variables values:
+    ****** by using the command line flags
+              example: terraform plan -var instance_count=2 -var environment="staging"
+    ******  by using a variable file
+               example: terraform plan --var-file=myvars.tfvars...
+                           #myvars.tfvars
+                           instance_count = 2
+                           environment = "staging"
+    ******* by using or exporting env variable
+              example: export TF_VAR_ami_id=ami-*(TF_VAR_FOLLOWED BY THE VARIABLE NAME)...
+                       export TF_VAR_availability_zones="["us-east-1a","us-east-1b"]"
+
+### terraform local variable
+    using locals make our terraform configuration more readable, reduce repetition, help organize our code
+*/
+locals {
+    instance_type = "t2.micro"
+    instance_count = 2
+    region = "us-east-2"
+    instance_name_pattern = "web-${var.environment}-"
+    availability_zones = ["us-east-2a", "us-east-2b","us-east-2c"]
+
+}   
+# then local variable can referenced elsewhere in the configuration using the 'local' prefix
+resource "aws_instance" "example" {
+    count = local.instance_count
+    instance_type = local.instance_type
+    ami = "ami-*"
+    tags = {
+        Name = "${local.instance_name_pattern}${count.index + 1}"
+        Environment = var.environment 
+    }
+}
+
+### TERRAFORM RESOURCE OUTPUT
+/* While creating comlex infrastructure,terraform stores all attribute values for all resources...
+sometimes we are interested in few  values such as LOADBALANCER IP,  DB DNS ADDRESS, ect...
+output is the way to get those values when terraform applies...
+*/
+#main.terraform {
+resource "aws_instance" "example" {
+    ami = "ami-*"
+    instance_type = "t2.micro"
+    tags = {
+        Name = "Example instance"
+
+    }
+}  
+output "public_ip"  {
+    value = aws_instance.example.public_ip
+}
+
+# sensitive output
+output "password" {
+    sensitive = true
+    value = VALUE 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+}
