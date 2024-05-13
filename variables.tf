@@ -155,7 +155,7 @@ resource "aws_instance" "example" {
 sometimes we are interested in few  values such as LOADBALANCER IP,  DB DNS ADDRESS, ect...
 output is the way to get those values when terraform applies...
 */
-#main.terraform {
+# main.tf
 resource "aws_instance" "example" {
     ami = "ami-*"
     instance_type = "t2.micro"
@@ -190,4 +190,4 @@ output "password" {
 
 
   
-}
+
