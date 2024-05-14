@@ -105,15 +105,15 @@ variable "bucket_name" {
 
 # reference varaiable example: used in resource block or modukes by using the 'var.'prefix...
 resource "aws_instance" "example" {
-    count = var.instance_count
+  count = var.instance_count
 
-    ami = var.ami_id
-    instance_type = "t2.micro"
-    tags = {
-        Name = "${var.environment}-${coumt.index + 1}"
-        Environment = var.environment 
-    
-    }
+  ami           = var.ami_id
+  instance_type = "t2.micro"
+  tags = {
+    Name        = "${var.environment}-${coumt.index + 1}"
+    Environment = var.environment
+
+  }
 }
 /*
 #### how to set variables values:
@@ -132,22 +132,22 @@ resource "aws_instance" "example" {
     using locals make our terraform configuration more readable, reduce repetition, help organize our code
 */
 locals {
-    instance_type = "t2.micro"
-    instance_count = 2
-    region = "us-east-2"
-    instance_name_pattern = "web-${var.environment}-"
-    availability_zones = ["us-east-2a", "us-east-2b","us-east-2c"]
+  instance_type         = "t2.micro"
+  instance_count        = 2
+  region                = "us-east-2"
+  instance_name_pattern = "web-${var.environment}-"
+  availability_zones    = ["us-east-2a", "us-east-2b", "us-east-2c"]
 
-}   
+}
 # then local variable can referenced elsewhere in the configuration using the 'local' prefix
 resource "aws_instance" "example" {
-    count = local.instance_count
-    instance_type = local.instance_type
-    ami = "ami-*"
-    tags = {
-        Name = "${local.instance_name_pattern}${count.index + 1}"
-        Environment = var.environment 
-    }
+  count         = local.instance_count
+  instance_type = local.instance_type
+  ami           = "ami-*"
+  tags = {
+    Name        = "${local.instance_name_pattern}${count.index + 1}"
+    Environment = var.environment
+  }
 }
 
 ### TERRAFORM RESOURCE OUTPUT
@@ -157,21 +157,21 @@ output is the way to get those values when terraform applies...
 */
 # main.tf
 resource "aws_instance" "example" {
-    ami = "ami-*"
-    instance_type = "t2.micro"
-    tags = {
-        Name = "Example instance"
+  ami           = "ami-*"
+  instance_type = "t2.micro"
+  tags = {
+    Name = "Example instance"
 
-    }
-}  
-output "public_ip"  {
-    value = aws_instance.example.public_ip
+  }
+}
+output "public_ip" {
+  value = aws_instance.example.public_ip
 }
 
 # sensitive output
 output "password" {
-    sensitive = true
-    value = VALUE 
+  sensitive = true
+  value     = VALUE
 }
 
 
@@ -189,5 +189,4 @@ output "password" {
 
 
 
-  
 
